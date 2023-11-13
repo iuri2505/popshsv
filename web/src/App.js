@@ -1,7 +1,7 @@
-import FuncRouter from './pages/FuncRouter';
+import Router from './pages/router/Router';
 
 const App = () => {
-	return <FuncRouter />;
+	return <Router />;
 };
 
 export default App;

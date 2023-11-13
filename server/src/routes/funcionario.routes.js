@@ -3,12 +3,16 @@ import {
 	createFuncionario,
 	findFuncionario,
 	findTudo,
-} from '../controllers/controllers.js';
+	deleteFuncionario,
+	verifyLogin,
+} from '../controllers/funcionario.controller.js';
 
 const router = express.Router();
 
 router.post('/', createFuncionario);
-router.get('/:nome/:cpf', findFuncionario);
+router.get('/:id', findFuncionario);
+router.get('/:nome/:cpf', verifyLogin);
 router.get('/', findTudo);
+router.delete('/:id', deleteFuncionario);
 
 export default router;

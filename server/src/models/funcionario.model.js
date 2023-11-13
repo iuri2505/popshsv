@@ -3,50 +3,63 @@ import db from '../config/database.config.js';
 
 const { DataTypes } = Sequelize;
 
-const Funcionario = db.define('funcionarios', {
+const funcionario = db.define('funcionarios', {
 	id: {
 		primaryKey: true,
 		type: DataTypes.NUMBER,
 		field: 'idFuncionario',
 	},
-	nome_funcionario: {
+	nome: {
 		type: DataTypes.STRING,
+		field: 'nome_funcionario',
 	},
-	cpf_funcionario: {
+	cpf: {
 		type: DataTypes.STRING,
+		field: 'cpf_funcionario',
 	},
-	cnpj_funcionario: {
+	cnpj: {
 		type: DataTypes.STRING,
+		field: 'cnpj_funcionario',
 	},
-	conselho_funcionario: {
+	conselho: {
 		type: DataTypes.STRING,
+		field: 'conselho_funcionario',
 	},
-	numero_conselho: {
+	numeroConselho: {
 		type: DataTypes.NUMBER,
+		field: 'numero_conselho',
 	},
-	especialidade_funcionario: {
+	especialidade: {
 		type: DataTypes.STRING,
+		field: 'especialidade_funcionario',
 	},
-	classificacao_funcionario: {
+	classificacao: {
 		type: DataTypes.STRING,
+		field: 'classificacao_funcionario',
 	},
-	numero_cns: {
+	cns: {
 		type: DataTypes.STRING,
+		field: 'numero_cns',
 	},
-	convenio_funcionario: {
+	convenio: {
 		type: DataTypes.STRING,
+		field: 'convenio_funcionario',
 	},
-	faturamento_funcionario: {
+	faturamento: {
 		type: DataTypes.STRING,
+		field: 'faturamento_funcionario',
 	},
-	atuacao_funcionario: {
+	atuacao: {
 		type: DataTypes.STRING,
+		field: 'atuacao_funcionario',
 	},
-	observacao_funcionario: {
+	observacao: {
 		type: DataTypes.STRING,
+		field: 'observacao_funcionario',
 	},
-	idSetor_FK: {
+	idSetorFK: {
 		type: DataTypes.NUMBER,
+		field: 'idSetor_FK',
 		references: {
 			model: 'setores',
 			key: 'idSetor',
@@ -62,4 +75,4 @@ const Funcionario = db.define('funcionarios', {
 	},
 });
 
-export default Funcionario;
+export default funcionario;

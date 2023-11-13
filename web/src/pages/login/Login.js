@@ -15,7 +15,11 @@ import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
 	nome: yup.string().required('Nome necessário.'),
-	cpf: yup.string().required('CPF necessário.'),
+	cpf: yup
+		.string()
+		.required('CPF necessário.')
+		.max(11, 'O CPF possui 11 dígitos')
+		.min(11, 'O CPF possui 11 dígitos'),
 });
 
 const Login = () => {
@@ -42,14 +46,13 @@ const Login = () => {
 		validationSchema: validationSchema,
 		onSubmit: async (values) => {
 			try {
-				console.log(values);
 				const response = await axios.get(
-					`http://localhost:3001/funcionarios/${formik.values.nome}/${formik.values.cpf}/`
+					`http://localhost:3001/funcionario/${formik.values.nome}/${formik.values.cpf}`
 				);
 				const autenticado = response.data;
-				if (autenticado > 0) {
-					localStorage.setItem('funcionario', formik.values.nome);
-					console.log(formik.values.nome);
+				if (autenticado) {
+					console.log(response.data.id);
+					localStorage.setItem('funcionario', response.data.id);
 					navigate('/');
 				} else {
 					setShowDialog(true);
