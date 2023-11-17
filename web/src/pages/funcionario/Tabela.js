@@ -56,27 +56,37 @@ const Tabela = () => {
 					container
 					spacing={2}
 				>
-					<Grid
-						item
-						xs={7}
-					>
+					<Grid item>
 						<Typography variant='h4'>Funcionários:</Typography>
 					</Grid>
-					<Grid item>
-						<Link href='/funcionario/formulario'>
-							<IconButton>
-								<MaisIcon />
-								Adicionar funcionário
-							</IconButton>
-						</Link>
-					</Grid>
-					<Grid item>
-						<Link href='/'>
-							<IconButton>
-								<HomeIcon />
-								Voltar
-							</IconButton>
-						</Link>
+					<Grid
+						item
+						xs={9}
+					>
+						<Grid
+							container
+							justifyContent='flex-end'
+						>
+							<Grid item>
+								<Link href='/funcionario/formulario'>
+									<IconButton>
+										<MaisIcon />
+										Adicionar funcionário
+									</IconButton>
+								</Link>
+							</Grid>
+							<Grid
+								item
+								textAlign='right'
+							>
+								<Link href='/'>
+									<IconButton>
+										<HomeIcon />
+										Voltar
+									</IconButton>
+								</Link>
+							</Grid>
+						</Grid>
 					</Grid>
 				</Grid>
 				<TableContainer component={Paper}>

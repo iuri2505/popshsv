@@ -6,7 +6,7 @@ const SubmitButton = () => {
 			type='submit'
 			variant='outlined'
 			fullWidth
-			style={{ marginBottom: '20px' }}
+			color='inherit'
 		>
 			Enviar
 		</Button>
