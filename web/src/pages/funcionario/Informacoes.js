@@ -1,8 +1,19 @@
-import { Grid, Typography, Container, Paper } from '@mui/material';
+import {
+	Grid,
+	Typography,
+	Container,
+	Paper,
+	IconButton,
+	Tooltip,
+	Link,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import TopBar from '../../components/TopBar';
+import VoltarIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Informacoes = () => {
 	const { id } = useParams();
@@ -10,41 +21,104 @@ const Informacoes = () => {
 	const [funcionario, setFuncionario] = useState([]);
 	const [setor, setSetor] = useState([]);
 
+	const getFuncionario = async () => {
+		const response = await axios.get(
+			`http://localhost:3001/funcionario/${id}`
+		);
+		setFuncionario(response.data);
+		console.log(response.data);
+	};
+
+	const getSetor = async () => {
+		const response = await axios.get(
+			`http://localhost:3001/setor/${funcionario.setor}`
+		);
+		setSetor(response.data);
+	};
+
+	const handleEdit = async (id) => {
+		navigate(`/funcionario/edicao/${id}`);
+	};
+
+	const handleDelete = async (id) => {
+		await axios.delete(`http://localhost:3001/funcionario/${id}`);
+		navigate('/funcionario');
+	};
+
 	useEffect(() => {
 		const funcionarioLogado = localStorage.getItem('funcionario');
 		if (!funcionarioLogado) {
 			navigate('/login');
 		}
 
-		const getFuncionario = async () => {
-			const response = await axios.get(
-				`http://localhost:3001/funcionario/${id}`
-			);
-			setFuncionario(response.data);
-			console.log(response.data);
-		};
-
 		getFuncionario();
 	}, [id, navigate]);
 
 	useEffect(() => {
-		if (funcionario.idSetorFK) {
-			const getSetor = async () => {
-				const response = await axios.get(
-					`http://localhost:3001/setor/${funcionario.idSetorFK}`
-				);
-				setSetor(response.data);
-			};
-
+		if (funcionario.setor) {
 			getSetor();
 		}
-	}, [funcionario.idSetorFK]);
+	}, [funcionario]);
 
 	return (
 		<>
 			<TopBar />
-			<Container>
-				<Typography variant='h4'>Informações de {setor}</Typography>
+			<Container sx={{ marginTop: '1rem' }}>
+				<Grid
+					container
+					spacing={2}
+					marginBottom='1rem'
+				>
+					<Grid
+						item
+						xs={4}
+					>
+						<Typography variant='h4'>
+							Informações de {funcionario.nome}
+						</Typography>
+					</Grid>
+					<Grid
+						item
+						xs={8}
+					>
+						<Grid
+							container
+							justifyContent='flex-end'
+						>
+							<Grid item>
+								<Tooltip title='Editar'>
+									<IconButton
+										onClick={() => {
+											handleEdit(funcionario.id);
+										}}
+									>
+										<EditIcon />
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Excluir'>
+									<IconButton
+										onClick={() => {
+											handleDelete(funcionario.id);
+										}}
+									>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Voltar'>
+									<Link href='/funcionario'>
+										<IconButton>
+											<VoltarIcon />
+										</IconButton>
+									</Link>
+								</Tooltip>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
 				<Container component={Paper}>
 					<Grid
 						container

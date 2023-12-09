@@ -5,7 +5,6 @@ import {
 	Container,
 	Typography,
 	TextField,
-	Snackbar,
 	FormControl,
 	InputLabel,
 	Select,
@@ -16,13 +15,12 @@ import {
 	IconButton,
 	Link,
 	Tooltip,
-	Alert,
 } from '@mui/material';
 import VoltarIcon from '@mui/icons-material/ArrowBack';
 import SubmitButton from '../../components/SubmitButton';
 import TopBar from '../../components/TopBar';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const validationSchema = yup.object({
 	nome: yup.string().required('Nome necessário.'),
@@ -40,12 +38,16 @@ const validationSchema = yup.object({
 });
 
 const Formulario = () => {
+	const { id } = useParams();
 	const navigate = useNavigate();
 	const [setores, setSetores] = useState();
-	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [funcionario, setFuncionario] = useState('');
 
-	const handleCloseSnackbar = () => {
-		setSnackbarOpen(false);
+	const getFuncionario = async () => {
+		const response = await axios.get(
+			`http://localhost:3001/funcionario/${id}`
+		);
+		setFuncionario(response.data);
 	};
 
 	const getSetor = async () => {
@@ -60,8 +62,15 @@ const Formulario = () => {
 			navigate('/login');
 		}
 
+		getFuncionario();
 		getSetor();
 	}, [navigate]);
+
+	useEffect(() => {
+		if (funcionario) {
+			formik.setValues(funcionario);
+		}
+	}, [funcionario]);
 
 	const formik = useFormik({
 		initialValues: {
@@ -82,7 +91,8 @@ const Formulario = () => {
 		validationSchema: validationSchema,
 		onSubmit: async (values) => {
 			console.log(values);
-			await axios.post('http://localhost:3001/funcionario', {
+			await axios.put('http://localhost:3001/funcionario', {
+				id: funcionario.id,
 				nome: formik.values.nome,
 				cpf: formik.values.cpf,
 				cnpj: formik.values.cnpj,
@@ -97,10 +107,7 @@ const Formulario = () => {
 				observacao: formik.values.observacao,
 				setor: formik.values.setor,
 			});
-
-			formik.resetForm();
-
-			setSnackbarOpen(true);
+			navigate('/funcionario');
 		},
 	});
 
@@ -118,7 +125,7 @@ const Formulario = () => {
 						xs={4}
 					>
 						<Typography variant='h4'>
-							Cadastro Funcionário:
+							Editar {funcionario.nome}:
 						</Typography>
 					</Grid>
 					<Grid
@@ -411,18 +418,6 @@ const Formulario = () => {
 					</form>
 				</Container>
 			</Container>
-			<Snackbar
-				open={snackbarOpen}
-				autoHideDuration={6000}
-				onClose={handleCloseSnackbar}
-			>
-				<Alert
-					onClose={handleCloseSnackbar}
-					severity='success'
-				>
-					Funcionário Cadastrado!
-				</Alert>
-			</Snackbar>
 		</>
 	);
 };

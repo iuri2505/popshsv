@@ -3,8 +3,10 @@ import FormularioFuncionario from '../funcionario/Formulario';
 import Login from '../login/Login';
 import TabelaFuncionario from '../funcionario/Tabela';
 import InformacoesFuncionario from '../funcionario/Informacoes';
+import EdicaoFuncionario from '../funcionario/Edicao';
 import FormularioPop from '../pop/Formulario';
 import TabelaPop from '../pop/Tabela';
+import EdicaoPop from '../pop/Edicao';
 import InformacoesPop from '../pop/Informacoes';
 import TabelaSetor from '../setor/Tabela';
 
@@ -25,12 +27,20 @@ const Router = () => {
 					element={<FormularioPop />}
 				/>
 				<Route
+					path='/funcionario/edicao/:id'
+					element={<EdicaoFuncionario />}
+				/>
+				<Route
 					path='/'
 					element={<TabelaPop />}
 				/>
 				<Route
 					path='/pop/informacoes/:id'
 					element={<InformacoesPop />}
+				/>
+				<Route
+					path='/pop/edicao/:id'
+					element={<EdicaoPop />}
 				/>
 				<Route
 					path='/funcionario'

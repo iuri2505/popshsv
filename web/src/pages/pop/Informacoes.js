@@ -1,7 +1,19 @@
-import { Grid, Typography } from '@mui/material';
+import {
+	Grid,
+	Typography,
+	Container,
+	Paper,
+	Tooltip,
+	IconButton,
+	Link,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import TopBar from '../../components/TopBar';
+import VoltarIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Informacoes = () => {
 	const { id } = useParams();
@@ -27,6 +39,15 @@ const Informacoes = () => {
 		setSetor(response.data);
 	};
 
+	const handleEdit = async (id) => {
+		navigate(`/pop/edicao/${id}`);
+	};
+
+	const handleDelete = async (id) => {
+		await axios.delete(`http://localhost:3001/pop/${id}`);
+		navigate('/');
+	};
+
 	useEffect(() => {
 		const funcionarioLogado = localStorage.getItem('funcionario');
 		if (!funcionarioLogado) {
@@ -44,62 +65,125 @@ const Informacoes = () => {
 	}, [pop.idFuncionarioFK, pop.idSetorFK]);
 
 	return (
-		<div
-			style={{
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-				height: '100vh',
-			}}
-		>
-			<Grid
-				container
-				spacing={2}
-			>
+		<>
+			<TopBar />
+			<Container sx={{ marginTop: '1rem' }}>
 				<Grid
-					item
-					xs={3}
+					container
+					spacing={2}
+					marginBottom='1rem'
 				>
-					<Typography variant='h6'>ID:</Typography>
-					<Typography variant='body2'>{pop.id}</Typography>
+					<Grid
+						item
+						xs={4}
+					>
+						<Typography variant='h4'>
+							Informações de {pop.titulo}
+						</Typography>
+					</Grid>
+					<Grid
+						item
+						xs={8}
+					>
+						<Grid
+							container
+							justifyContent='flex-end'
+						>
+							<Grid item>
+								<Tooltip title='Editar'>
+									<IconButton
+										onClick={() => {
+											handleEdit(pop.id);
+										}}
+									>
+										<EditIcon />
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Excluir'>
+									<IconButton
+										onClick={() => {
+											handleDelete(pop.id);
+										}}
+									>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Voltar'>
+									<Link href='/'>
+										<IconButton>
+											<VoltarIcon />
+										</IconButton>
+									</Link>
+								</Tooltip>
+							</Grid>
+						</Grid>
+					</Grid>
 				</Grid>
-				<Grid
-					item
-					xs={3}
-				>
-					<Typography variant='h6'>Titulo:</Typography>
-					<Typography variant='body2'>{pop.titulo}</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={10}
-				>
-					<Typography variant='h6'>Objetivo:</Typography>
-					<Typography variant='body2'>{pop.objetivo}</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={10}
-				>
-					<Typography variant='h6'>Procedimentos:</Typography>
-					<Typography variant='body2'>{pop.procedimentos}</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={3}
-				>
-					<Typography variant='h6'>Funcionario:</Typography>
-					<Typography variant='body2'>{funcionario.nome}</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={3}
-				>
-					<Typography variant='h6'>Setor:</Typography>
-					<Typography variant='body2'>{setor.nome}</Typography>
-				</Grid>
-			</Grid>
-		</div>
+				<Container component={Paper}>
+					<Grid
+						container
+						spacing={2}
+					>
+						<Grid
+							item
+							xs={3}
+						>
+							<Typography variant='h6'>ID:</Typography>
+							<Typography variant='body2'>{pop.id}</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={3}
+						>
+							<Typography variant='h6'>Titulo:</Typography>
+							<Typography variant='body2'>
+								{pop.titulo}
+							</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={10}
+						>
+							<Typography variant='h6'>Objetivo:</Typography>
+							<Typography variant='body2'>
+								{pop.objetivo}
+							</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={10}
+						>
+							<Typography variant='h6'>Procedimentos:</Typography>
+							<Typography variant='body2'>
+								{pop.procedimentos}
+							</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={3}
+						>
+							<Typography variant='h6'>Funcionario:</Typography>
+							<Typography variant='body2'>
+								{funcionario.nome}
+							</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={3}
+						>
+							<Typography variant='h6'>Setor:</Typography>
+							<Typography variant='body2'>
+								{setor.nome}
+							</Typography>
+						</Grid>
+					</Grid>
+				</Container>
+			</Container>
+		</>
 	);
 };
 

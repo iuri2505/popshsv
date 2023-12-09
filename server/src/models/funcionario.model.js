@@ -57,7 +57,7 @@ const funcionario = db.define('funcionarios', {
 		type: DataTypes.STRING,
 		field: 'observacao_funcionario',
 	},
-	idSetorFK: {
+	setor: {
 		type: DataTypes.NUMBER,
 		field: 'idSetor_FK',
 		references: {

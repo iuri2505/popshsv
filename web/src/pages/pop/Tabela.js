@@ -11,6 +11,8 @@ import {
 	Grid,
 	Link,
 	Tooltip,
+	Snackbar,
+	Alert,
 } from '@mui/material';
 import TopBar from '../../components/TopBar';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -26,6 +28,11 @@ import { useNavigate } from 'react-router-dom';
 const Tabela = () => {
 	const navigate = useNavigate();
 	const [pops, setPops] = useState([]);
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+	const handleCloseSnackbar = () => {
+		setSnackbarOpen(false);
+	};
 
 	const getPop = async () => {
 		const response = await axios.get('http://localhost:3001/pop');
@@ -36,9 +43,14 @@ const Tabela = () => {
 		navigate(`/pop/informacoes/${id}`);
 	};
 
+	const handleEdit = (id) => {
+		navigate(`/pop/edicao/${id}`);
+	};
+
 	const handleDelete = async (id) => {
 		await axios.delete(`http://localhost:3001/pop/${id}`);
 		getPop();
+		setSnackbarOpen(true);
 	};
 
 	useEffect(() => {
@@ -59,37 +71,50 @@ const Tabela = () => {
 				>
 					<Grid
 						item
-						xs={6}
+						xs={4}
 					>
 						<Typography variant='h4'>POPS:</Typography>
 					</Grid>
-					<Grid item>
-						<Link href='/setor'>
-							<IconButton>
-								<SetorIcon />
-								Setores
-							</IconButton>
-						</Link>
-					</Grid>
-					<Grid item>
-						<Link href='/funcionario'>
-							<IconButton>
-								<FuncionarioIcon />
-								Funcionários
-							</IconButton>
-						</Link>
-					</Grid>
-					<Grid item>
-						<Link href='/pop/formulario'>
-							<IconButton>
-								<MaisIcon />
-								Adicionar POP
-							</IconButton>
-						</Link>
+					<Grid
+						item
+						xs={8}
+					>
+						<Grid
+							container
+							justifyContent='flex-end'
+						>
+							<Grid item>
+								<Tooltip title='Setores'>
+									<Link href='/setor'>
+										<IconButton>
+											<SetorIcon />
+										</IconButton>
+									</Link>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Funcionários'>
+									<Link href='/funcionario'>
+										<IconButton>
+											<FuncionarioIcon />
+										</IconButton>
+									</Link>
+								</Tooltip>
+							</Grid>
+							<Grid item>
+								<Tooltip title='Adicionar POP'>
+									<Link href='/pop/formulario'>
+										<IconButton>
+											<MaisIcon />
+										</IconButton>
+									</Link>
+								</Tooltip>
+							</Grid>
+						</Grid>
 					</Grid>
 				</Grid>
 				<TableContainer component={Paper}>
-					<Table aria-label='pops'>
+					<Table>
 						<TableBody>
 							{pops.map((pop) => (
 								<TableRow key={pop.id}>
@@ -109,7 +134,11 @@ const Tabela = () => {
 									</TableCell>
 									<TableCell align='right'>
 										<Tooltip title='Editar'>
-											<IconButton>
+											<IconButton
+												onClick={() => {
+													handleEdit(pop.id);
+												}}
+											>
 												<EditIcon />
 											</IconButton>
 										</Tooltip>
@@ -131,6 +160,18 @@ const Tabela = () => {
 					</Table>
 				</TableContainer>
 			</Container>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={6000}
+				onClose={handleCloseSnackbar}
+			>
+				<Alert
+					onClose={handleCloseSnackbar}
+					severity='success'
+				>
+					POP deletada!
+				</Alert>
+			</Snackbar>
 		</>
 	);
 };

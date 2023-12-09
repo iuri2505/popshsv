@@ -5,11 +5,12 @@ import {
 	Container,
 	Typography,
 	TextField,
-	Button,
-	Dialog,
-	DialogActions,
-	DialogTitle,
+	Paper,
+	Grid,
+	Snackbar,
+	Alert,
 } from '@mui/material';
+import SubmitButton from '../../components/SubmitButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,6 +25,11 @@ const validationSchema = yup.object({
 
 const Login = () => {
 	const navigate = useNavigate();
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+	const handleCloseSnackbar = () => {
+		setSnackbarOpen(false);
+	};
 
 	useEffect(() => {
 		const funcionarioLogado = localStorage.getItem('funcionario');
@@ -31,12 +37,6 @@ const Login = () => {
 			navigate('/');
 		}
 	});
-
-	const [showDialog, setShowDialog] = useState(false);
-
-	const handleCloseDialog = () => {
-		setShowDialog(false);
-	};
 
 	const formik = useFormik({
 		initialValues: {
@@ -55,7 +55,7 @@ const Login = () => {
 					localStorage.setItem('funcionario', response.data.id);
 					navigate('/');
 				} else {
-					setShowDialog(true);
+					setSnackbarOpen(true);
 					console.log('LOGIN INVALIDO');
 				}
 			} catch (error) {
@@ -65,68 +65,89 @@ const Login = () => {
 	});
 
 	return (
-		<Container
-			component='main'
-			maxWidth='xs'
-			sx={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }}
-		>
-			<Typography
-				variant='h4'
-				style={{ marginTop: '20px' }}
+		<>
+			<Container
+				component={Paper}
+				maxWidth='sm'
 			>
-				Login
-			</Typography>
-			<form onSubmit={formik.handleSubmit}>
-				<TextField
-					margin='normal'
-					fullWidth
-					autoComplete='off'
-					id='nome'
-					name='nome'
-					label='Nome:'
-					value={formik.values.nome}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={formik.touched.nome && Boolean(formik.errors.nome)}
-					helperText={formik.touched.nome && formik.errors.nome}
-				/>
-				<TextField
-					margin='normal'
-					fullWidth
-					autoComplete='off'
-					id='cpf'
-					name='cpf'
-					label='	CPF:'
-					value={formik.values.cpf}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={formik.touched.cpf && Boolean(formik.errors.cpf)}
-					helperText={formik.touched.cpf && formik.errors.cpf}
-				/>
-				<Button
-					type='submit'
-					variant='outlined'
-					fullWidth
-					style={{ marginBottom: '20px' }}
+				<Typography
+					variant='h4'
+					marginBottom='1rem'
 				>
-					Enviar
-				</Button>
-			</form>
-			<Dialog
-				open={showDialog}
-				onClose={handleCloseDialog}
-			>
-				<DialogTitle>{'Login inválido.'}</DialogTitle>
-				<DialogActions>
-					<Button
-						variant='outlined'
-						onClick={handleCloseDialog}
+					Login
+				</Typography>
+				<form onSubmit={formik.handleSubmit}>
+					<Grid
+						container
+						spacing={2}
 					>
-						Fechar
-					</Button>
-				</DialogActions>
-			</Dialog>
-		</Container>
+						<Grid
+							item
+							xs={12}
+						>
+							<TextField
+								fullWidth
+								autoComplete='off'
+								id='nome'
+								name='nome'
+								label='Nome:'
+								value={formik.values.nome}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={
+									formik.touched.nome &&
+									Boolean(formik.errors.nome)
+								}
+								helperText={
+									formik.touched.nome && formik.errors.nome
+								}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+						>
+							<TextField
+								fullWidth
+								autoComplete='off'
+								id='cpf'
+								name='cpf'
+								label='	CPF:'
+								value={formik.values.cpf}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								error={
+									formik.touched.cpf &&
+									Boolean(formik.errors.cpf)
+								}
+								helperText={
+									formik.touched.cpf && formik.errors.cpf
+								}
+							/>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							marginBottom='1rem'
+						>
+							<SubmitButton />
+						</Grid>
+					</Grid>
+				</form>
+			</Container>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={6000}
+				onClose={handleCloseSnackbar}
+			>
+				<Alert
+					onClose={handleCloseSnackbar}
+					severity='error'
+				>
+					Login invalido!
+				</Alert>
+			</Snackbar>
+		</>
 	);
 };
 

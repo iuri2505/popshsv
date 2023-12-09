@@ -1,5 +1,20 @@
 import setor from '../models/setor.model.js';
 
+export const createSetor = async (req, res) => {
+	try {
+		await setor.create(req.body);
+		console.log('setor criado');
+		res.json({
+			mensagem: 'setor criado',
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.json({
+			messagem: error.message,
+		});
+	}
+};
+
 export const findSetor = async (req, res) => {
 	try {
 		const response = await setor.findOne({
@@ -46,7 +61,7 @@ export const deleteSetor = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error.message);
-		res.json({
+		res.status(400).json({
 			mensagem: error.message,
 		});
 	}

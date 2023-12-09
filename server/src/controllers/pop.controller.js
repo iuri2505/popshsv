@@ -16,6 +16,25 @@ export const createPop = async (req, res) => {
 	}
 };
 
+export const updatePop = async (req, res) => {
+	try {
+		await pop.update(req.body, {
+			where: {
+				id: req.body.id,
+			},
+		});
+		console.log('pop atualizada');
+		res.json({
+			mensagem: 'pop atualizada',
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.json({
+			mensagem: error.message,
+		});
+	}
+};
+
 export const findAllPop = async (req, res) => {
 	try {
 		const response = await pop.findAll();

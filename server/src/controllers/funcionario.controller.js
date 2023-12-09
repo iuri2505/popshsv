@@ -16,6 +16,25 @@ export const createFuncionario = async (req, res) => {
 	}
 };
 
+export const updateFuncionario = async (req, res) => {
+	try {
+		await funcionario.update(req.body, {
+			where: {
+				id: req.body.id,
+			},
+		});
+		console.log('funcionario atualizado');
+		res.json({
+			mensagem: 'funcionario atualizado',
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.json({
+			messagem: error.message,
+		});
+	}
+};
+
 export const verifyLogin = async (req, res) => {
 	try {
 		const response = await funcionario.findOne({

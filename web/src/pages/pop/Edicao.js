@@ -5,8 +5,6 @@ import {
 	Container,
 	Typography,
 	TextField,
-	Snackbar,
-	Alert,
 	FormControl,
 	InputLabel,
 	Select,
@@ -22,7 +20,7 @@ import SubmitButton from '../../components/SubmitButton';
 import VoltarIcon from '@mui/icons-material/ArrowBack';
 import TopBar from '../../components/TopBar';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const validationSchema = yup.object({
 	titulo: yup.string().required('Titulo necessário.'),
@@ -31,13 +29,21 @@ const validationSchema = yup.object({
 	setor: yup.number().required('Setor necessário'),
 });
 
-const Formulario = () => {
+const Edicao = () => {
+	const { id } = useParams();
 	const navigate = useNavigate();
+	const [pop, setPop] = useState({
+		id: '',
+		titulo: '',
+		objetivo: '',
+		procedimentos: '',
+		idSetorFK: '',
+	});
 	const [setores, setSetores] = useState();
-	const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-	const handleCloseSnackbar = () => {
-		setSnackbarOpen(false);
+	const getPop = async () => {
+		const response = await axios.get(`http://localhost:3001/pop/${id}`);
+		setPop(response.data);
 	};
 
 	const getSetor = async () => {
@@ -51,8 +57,21 @@ const Formulario = () => {
 			navigate('/login');
 		}
 
+		getPop();
 		getSetor();
-	}, [navigate]);
+	}, [navigate, id]);
+
+	useEffect(() => {
+		if (pop) {
+			formik.setValues({
+				titulo: pop.titulo,
+				objetivo: pop.objetivo,
+				procedimentos: pop.procedimentos,
+				setor: pop.idSetorFK,
+			});
+			console.log(pop.setor);
+		}
+	}, [pop]);
 
 	const formik = useFormik({
 		initialValues: {
@@ -67,17 +86,15 @@ const Formulario = () => {
 		onSubmit: async (values) => {
 			console.log(values);
 
-			await axios.post('http://localhost:3001/pop/', {
+			await axios.put('http://localhost:3001/pop/', {
+				id: pop.id,
 				titulo: formik.values.titulo,
 				objetivo: formik.values.objetivo,
 				procedimentos: formik.values.procedimentos,
 				idFuncionarioFK: localStorage.getItem('funcionario'),
 				idSetorFK: formik.values.setor,
 			});
-
-			formik.resetForm();
-
-			setSnackbarOpen(true);
+			navigate('/');
 		},
 	});
 
@@ -94,7 +111,9 @@ const Formulario = () => {
 						item
 						xs={4}
 					>
-						<Typography variant='h4'>Cadastro de POPs</Typography>
+						<Typography variant='h4'>
+							Editar {pop.titulo}
+						</Typography>
 					</Grid>
 					<Grid
 						item
@@ -149,41 +168,43 @@ const Formulario = () => {
 								item
 								xs={6}
 							>
-								<FormControl
-									fullWidth
-									error={
-										formik.touched.setor &&
-										Boolean(formik.errors.setor)
-									}
-								>
-									<InputLabel id='label-select'>
-										Setor:
-									</InputLabel>
-									<Select
-										id='setor'
-										name='setor'
-										label='setor'
-										value={formik.values.setor}
-										onChange={formik.handleChange}
-										onBlur={formik.handleBlur}
+								{
+									<FormControl
+										fullWidth
+										error={
+											formik.touched.setor &&
+											Boolean(formik.errors.setor)
+										}
 									>
-										{setores &&
-											setores.map((setor) => (
-												<MenuItem
-													key={setor.id}
-													value={setor.id}
-												>
-													{setor.nome}
-												</MenuItem>
-											))}
-									</Select>
-									{formik.touched.setor &&
-									formik.errors.setor ? (
-										<FormHelperText>
-											{formik.errors.setor}
-										</FormHelperText>
-									) : null}
-								</FormControl>
+										<InputLabel id='label-select'>
+											Setor:
+										</InputLabel>
+										<Select
+											id='setor'
+											name='setor'
+											label='setor'
+											value={formik.values.setor}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+										>
+											{setores &&
+												setores.map((setor) => (
+													<MenuItem
+														key={setor.id}
+														value={setor.id}
+													>
+														{setor.nome}
+													</MenuItem>
+												))}
+										</Select>
+										{formik.touched.setor &&
+										formik.errors.setor ? (
+											<FormHelperText>
+												{formik.errors.setor}
+											</FormHelperText>
+										) : null}
+									</FormControl>
+								}
 							</Grid>
 							<Grid
 								item
@@ -254,20 +275,8 @@ const Formulario = () => {
 					</form>
 				</Container>
 			</Container>
-			<Snackbar
-				open={snackbarOpen}
-				autoHideDuration={6000}
-				onClose={handleCloseSnackbar}
-			>
-				<Alert
-					onClose={handleCloseSnackbar}
-					severity='success'
-				>
-					POP cadastrada!
-				</Alert>
-			</Snackbar>
 		</>
 	);
 };
 
-export default Formulario;
+export default Edicao;
