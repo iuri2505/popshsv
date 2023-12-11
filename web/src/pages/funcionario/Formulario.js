@@ -88,7 +88,7 @@ const Formulario = () => {
 				cnpj: formik.values.cnpj,
 				conselho: formik.values.conselho,
 				numeroConselho: formik.values.numeroConselho,
-				especialidadeo: formik.values.especialidade,
+				especialidade: formik.values.especialidade,
 				classificacao: formik.values.classificacao,
 				cns: formik.values.cns,
 				convenio: formik.values.convenio,
